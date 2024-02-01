@@ -1,0 +1,29 @@
+<form #homeform="ngForm" (ngSubmit)="onSubmit(homeform)">
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input matInput type="email" name="email" ngModel required />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput type="text" name="name" ngModel required />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Gender</mat-label>
+    <mat-select name="gender" ngModel required>
+      <mat-option value="male">Male</mat-option>
+      <mat-option value="female">Female</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select name="status" ngModel required>
+      <mat-option value="active">Active</mat-option>
+      <mat-option value="inactive">Inactive</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-button color="primary" type="submit">Submit</button>
+</form>
