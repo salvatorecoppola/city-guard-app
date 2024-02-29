@@ -34,6 +34,7 @@
   <li>
     <p>{{ item.title }}</p>
     <p>{{ item.body }}</p>
+
     <input
       type="text"
       [(ngModel)]="item.additionalInfo"
@@ -41,4 +42,7 @@
     />
     <button (click)="sendInfo(item.additionalInfo)">Send Info</button>
   </li>
+  <div *ngIf="comment">
+    <h1>{{ comment.body }}</h1>
+  </div>
 </div>

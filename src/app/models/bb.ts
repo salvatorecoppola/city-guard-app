@@ -6,3 +6,10 @@ export interface Comments {
   body: string;
   //status: string;
 }
+export interface CommentsS {
+  post_id: any;
+  name: string;
+  email: string;
+  body: string;
+  //status: string;
+}

@@ -2,12 +2,13 @@ import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { HttpClient } from '@angular/common/http';
 import { UserSignUp } from '../models/aa';
-import { Comments } from '../models/bb';
+import { Comments, CommentsS } from '../models/bb';
 import { POST } from '../models/cc';
 import { title } from 'process';
 import { Observable, of } from 'rxjs';
 import { Root2 } from '../models/id';
 import { Post } from '../models/post';
+import { NumberFormatStyle } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,9 @@ import { Post } from '../models/post';
 export class HomeComponent implements OnInit {
   userSignUp: UserSignUp[] = [];
   comments: Comments[] = [];
+  comment: CommentsS;
   post: Root2[] = [];
+  post_id: any;
 
   destlist$: any;
   constructor(private dataBase: DatabaseService, private http: HttpClient) {}
@@ -66,11 +69,31 @@ export class HomeComponent implements OnInit {
   }
 
   GetAll() {
-    this.dataBase.GetAll().subscribe((result) => (this.destlist$ = result));
+    this.dataBase
+      .GetAll()
+      .subscribe(
+        (result) => (
+          (this.destlist$ = result),
+          console.log(result),
+          console.log(this.destlist$)
+        )
+      );
   }
 
-  sendInfo(info: string) {
+  sendInfo(item: string) {
+    [this.destlist$.user_id];
+    this.comment = {
+      name: JSON.parse(localStorage.getItem('user')).name,
+      email: JSON.parse(localStorage.getItem('user')).email,
+      body: item,
+      post_id: this.destlist$[0].id,
+    };
+    console.log(this.destlist$);
+    this.dataBase
+      .commentaPost(this.comment)
+      .subscribe((result) => ((this.comment = result), console.log(result)));
     // Qui puoi implementare la logica per inviare le informazioni aggiuntive al tuo backend o fare qualsiasi altra operazione necessaria
-    console.log('Info:', info);
+    console.log('Info:', this.post_id);
+    console.log('COMMENT:', this.comment);
   }
 }

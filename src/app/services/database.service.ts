@@ -4,6 +4,7 @@ import { userFromSignup } from '../models/user.FromSignup.model';
 import { Observable, Subject, tap } from 'rxjs';
 import { UserSignUp } from '../models/aa';
 import { POST } from '../models/cc';
+import { Comments, CommentsS } from '../models/bb';
 
 @Injectable({
   providedIn: 'root',
@@ -80,6 +81,17 @@ export class DatabaseService {
       Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
     });
     return this.http.get(url, { headers });
+  }
+  commentaPost(comment: CommentsS): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
+    });
+    return this.http.post(
+      `https://gorest.co.in/public/v2/posts/${comment.post_id}/comments`,
+      comment,
+      { headers }
+    );
   }
 }
 
