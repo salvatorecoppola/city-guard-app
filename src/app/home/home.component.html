@@ -1,1 +1,44 @@
-<h1>Fess e mammt</h1>
+<h1>User</h1>
+<div *ngFor="let user of userSignUp">
+  <p>{{ user.email }}</p>
+  <p>{{ user.name }}</p>
+  <p>{{ user.gender }}</p>
+  <p>{{ user.status }}</p>
+  <p>{{ user.id }}</p>
+</div>
+
+<div *ngFor="let post of post">
+  <h1>post</h1>
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+
+  <div *ngFor="let comment of comments">
+    <div *ngIf="comment.post_id === post.id">
+      <h1>{{ comment.body }}</h1>
+    </div>
+  </div>
+</div>
+
+<form #postForm="ngForm" (ngSubmit)="onPost(postForm.value)">
+  <label>title</label>
+  <input type="text" name="title" ngModel />
+  <label>body</label>
+  <input type="text" name="body" ngModel />
+  <button type="submit">ARCIBOTTONEMALVAGIO</button>
+</form>
+<!--
+<input type="text" [(ngModel)]="inputValue" />
+<button (click)="passValue($event)">passavalore</button>
+<div>{{ outputValue }}</div> -->
+<div *ngFor="let item of destlist$">
+  <li>
+    <p>{{ item.title }}</p>
+    <p>{{ item.body }}</p>
+    <input
+      type="text"
+      [(ngModel)]="item.additionalInfo"
+      placeholder="Insert additional info"
+    />
+    <button (click)="sendInfo(item.additionalInfo)">Send Info</button>
+  </li>
+</div>

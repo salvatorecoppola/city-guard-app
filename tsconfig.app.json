@@ -13,6 +13,5 @@
     "server.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
   ]
 }
