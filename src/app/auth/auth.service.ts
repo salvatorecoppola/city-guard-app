@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { userFromSignup } from '../models/user.FromSignup.model';
-import { userFromLogin } from '../models/userFromLogin.model';
+import { userFromSignup } from '../models/userFromSignup';
+import { userFromLogin } from '../models/userFromLogin';
 
 @Injectable({
   providedIn: 'root',

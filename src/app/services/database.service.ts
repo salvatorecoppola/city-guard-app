@@ -1,21 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { userFromSignup } from '../models/user.FromSignup.model';
 import { Observable, Subject, tap } from 'rxjs';
-import { UserSignUp } from '../models/aa';
-import { POST } from '../models/cc';
-import { Comments, CommentsS } from '../models/bb';
+import { UserSignUp } from '../models/userSignup';
+import { userComments } from '../models/comments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
-  //
-  post: POST;
-  user: UserSignUp;
   nani = JSON.parse(localStorage.getItem('user')).id;
-
-  userSignUp: UserSignUp[] = [];
 
   url = 'https://gorest.co.in/public/v2/users';
 
@@ -50,7 +43,7 @@ export class DatabaseService {
     const url = 'https://gorest.co.in/public/v2/comments';
     return this.http.get(url);
   }
-  returnPosts() {
+  returnStandardPosts() {
     return this.http.get('https://gorest.co.in/public/v2/posts');
   }
 
@@ -82,46 +75,26 @@ export class DatabaseService {
     });
     return this.http.get(url, { headers });
   }
-  commentaPost(comment: CommentsS): Observable<any> {
+  commentaPost(comment: userComments): Observable<any> {
+    const url = `https://gorest.co.in/public/v2/posts/${comment.post_id}/comments`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
     });
-    return this.http.post(
-      `https://gorest.co.in/public/v2/posts/${comment.post_id}/comments`,
-      comment,
-      { headers }
+    console.log(url);
+    return this.http.post(url, comment, { headers }).pipe(
+      tap((response: any) => {
+        this.GetAllComments;
+        this.Refreshrequired.next();
+      })
     );
   }
+  GetAllComments(comment: any) {
+    const url = `https://gorest.co.in/public/v2/posts/${comment}/comments`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
+    });
+    return this.http.get(url, { headers });
+  }
 }
-
-// createNewPost(post: {
-//   UserID: number;
-//   title: string;
-//   body: string;
-// }): Observable<object> {
-//   const url = `https://gorest.co.in/public/v2/users/${post.UserID}/posts`;
-
-//   const headers = new HttpHeaders({
-//     'Content-Type': 'application/json',
-//     Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-//   });
-
-//   return this.http.post(url, post, { headers }).pipe(
-//     tap((response: any) => {
-//       const newPostUserId = response.user_id;
-//       this.GetAll(newPostUserId);
-//       console.log(newPostUserId);
-//       this.Refreshrequired.next();
-//     })
-//   );
-// }
-
-// GetAll(userId?: number): Observable<object> {
-//   const url = `https://gorest.co.in/public/v2/users/${userId}/posts`;
-//   const headers = new HttpHeaders({
-//     'Content-Type': 'application/json',
-//     Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-//   });
-//   return this.http.get(url, { headers });
-// }
