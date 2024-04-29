@@ -1,15 +1,13 @@
-export interface Comments {
+export interface StandardComments {
   id: number;
   post_id: number;
   name: string;
   email: string;
   body: string;
-  //status: string;
 }
-export interface CommentsS {
+export interface userComments {
   post_id: any;
   name: string;
   email: string;
   body: string;
-  //status: string;
 }

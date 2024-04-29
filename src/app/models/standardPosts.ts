@@ -1,4 +1,4 @@
-export interface Root2 {
+export interface StandardPosts {
   id: number;
   user_id: number;
   title: string;

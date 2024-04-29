@@ -7,12 +7,12 @@
   <p>{{ user.id }}</p>
 </div>
 
-<div *ngFor="let post of post">
+<div *ngFor="let post of standardPosts">
   <h1>post</h1>
   <h2>{{ post.title }}</h2>
   <p>{{ post.body }}</p>
 
-  <div *ngFor="let comment of comments">
+  <div *ngFor="let comment of standardComments">
     <div *ngIf="comment.post_id === post.id">
       <h1>{{ comment.body }}</h1>
     </div>
@@ -26,23 +26,28 @@
   <input type="text" name="body" ngModel />
   <button type="submit">ARCIBOTTONEMALVAGIO</button>
 </form>
+
 <!--
 <input type="text" [(ngModel)]="inputValue" />
 <button (click)="passValue($event)">passavalore</button>
 <div>{{ outputValue }}</div> -->
-<div *ngFor="let item of destlist$">
-  <li>
-    <p>{{ item.title }}</p>
-    <p>{{ item.body }}</p>
-
-    <input
-      type="text"
-      [(ngModel)]="item.additionalInfo"
-      placeholder="Insert additional info"
-    />
-    <button (click)="sendInfo(item.additionalInfo)">Send Info</button>
-  </li>
-  <div *ngIf="comment">
-    <h1>{{ comment.body }}</h1>
+<div *ngFor="let post of postlist$">
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+  <!-- <button (click)="getCommentId(post.id)">Get Comment ID</button> -->
+  <div *ngFor="let comment of commentlist$">
+    <div *ngIf="comment.post_id === post.id">
+      <p>{{ comment.body }}</p>
+    </div>
   </div>
+  <!-- Form per aggiungere un nuovo commento sotto il post -->
+  <form
+    #commentForm="ngForm"
+    (click)="getCommentId(post.id); showComment(post.id)"
+    (ngSubmit)="onComment(commentForm.value, post.id)"
+  >
+    <label>Body</label>
+    <input type="text" name="body" ngModel required />
+    <button type="submit">Comment</button>
+  </form>
 </div>

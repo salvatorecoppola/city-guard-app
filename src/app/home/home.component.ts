@@ -1,14 +1,10 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { HttpClient } from '@angular/common/http';
-import { UserSignUp } from '../models/aa';
-import { Comments, CommentsS } from '../models/bb';
-import { POST } from '../models/cc';
-import { title } from 'process';
-import { Observable, of } from 'rxjs';
-import { Root2 } from '../models/id';
+import { UserSignUp } from '../models/userSignup';
+import { StandardComments, userComments } from '../models/comments';
+import { StandardPosts } from '../models/standardPosts';
 import { Post } from '../models/post';
-import { NumberFormatStyle } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -17,16 +13,21 @@ import { NumberFormatStyle } from '@angular/common';
 })
 export class HomeComponent implements OnInit {
   userSignUp: UserSignUp[] = [];
-  comments: Comments[] = [];
-  comment: CommentsS;
-  post: Root2[] = [];
-  post_id: any;
+  standardPosts: StandardPosts[] = [];
+  standardComments: StandardComments[] = [];
+  postlist$: Post[] = [];
+  comment: userComments;
+  commentlist$: userComments[];
+  post_id: number;
+  comment_id: number;
 
-  destlist$: any;
-  constructor(private dataBase: DatabaseService, private http: HttpClient) {}
+  constructor(private dataBase: DatabaseService) {}
 
   ngOnInit(): void {
-    this.dataBase.returnPosts();
+    this.showComment;
+    this.dataBase.GetAllComments;
+    this.onComment;
+    this.dataBase.returnStandardPosts();
     this.GetAll();
     this.dataBase.Refreshrequired.subscribe((response) => {
       this.GetAll();
@@ -46,54 +47,91 @@ export class HomeComponent implements OnInit {
       console.log(updatedDataString);
       return data;
     });
-    this.dataBase.returnComments().subscribe((comments: Comments[]) => {
-      comments.map((comment) => comment.id);
-
-      this.comments = Object.keys(comments).map((key) => {
-        const commentID = [key];
-        return comments[key];
+    //Retrieving standard posts from API;
+    this.dataBase
+      .returnStandardPosts()
+      .subscribe((standardPost: StandardPosts[]) => {
+        this.standardPosts = standardPost;
       });
-      console.log(this.comments);
-    });
-    this.dataBase.returnPosts().subscribe((data: any) => {
-      this.post = data;
-      console.log(this.post);
-    });
+    //Retrieving standard comments from API;
+    this.dataBase
+      .returnComments()
+      .subscribe((standardComments: StandardComments[]) => {
+        this.standardComments = Object.keys(standardComments).map((key) => {
+          return standardComments[key];
+        });
+      });
   }
 
+  //Posting custom post in to API;
+  //taking data from home.compomnent.html NGFORM
+  //and passing it to database for put the data
+  //in to another function (createNewPost)
+  //wich will send data to the server
   onPost(newPost: { title: string; body: string }) {
+    //and make the refresh of the function nested in it
     this.dataBase.createNewPost(newPost).subscribe((data: any) => {
       newPost = data;
-      console.log(newPost);
     });
   }
 
+  //Getting the custom post previously sended on th server.
+  //and here we will display them in to HTML
+  //calling in ngOnInit and make sure refresh it
+  //every time we write a post.
   GetAll() {
-    this.dataBase
-      .GetAll()
-      .subscribe(
-        (result) => (
-          (this.destlist$ = result),
-          console.log(result),
-          console.log(this.destlist$)
-        )
-      );
+    this.dataBase.GetAll().subscribe((data: Post[]) => {
+      this.postlist$ = data;
+      return data;
+    });
   }
 
-  sendInfo(item: string) {
-    [this.destlist$.user_id];
+  //Called in to comment form in
+  //home.component.hmtl, this function
+  //will send the id from the clicked comment
+  //so we can display the right comment at the right post
+  getCommentId(commentId: number) {
+    console.log('Comment ID:', commentId);
+  }
+
+  //The custom comment logic
+  onComment(form: any, postId: number) {
+    //taking the required data for the POST request
+    const body = form.body;
     this.comment = {
       name: JSON.parse(localStorage.getItem('user')).name,
       email: JSON.parse(localStorage.getItem('user')).email,
-      body: item,
-      post_id: this.destlist$[0].id,
+      body: body,
+      post_id: postId,
     };
-    console.log(this.destlist$);
+    //now send them in our database
+    //and make the POST request
     this.dataBase
       .commentaPost(this.comment)
-      .subscribe((result) => ((this.comment = result), console.log(result)));
-    // Qui puoi implementare la logica per inviare le informazioni aggiuntive al tuo backend o fare qualsiasi altra operazione necessaria
-    console.log('Info:', this.post_id);
-    console.log('COMMENT:', this.comment);
+      .subscribe((result: StandardComments[]) => {
+        result;
+      });
+    //commentaPost we will send back our processed data
+    // and we call another function that return the comment that
+    // we have made under our post
+    this.dataBase
+      .GetAllComments(this.comment.post_id)
+      .subscribe((result: StandardComments[]) => {
+        this.commentlist$ = result;
+      });
+    //here we are making the refresh of comments for
+    //having them in real time
+    this.dataBase.Refreshrequired.subscribe((response) => {
+      this.onComment;
+    });
+  }
+  showComment(comment_id: number) {
+    console.log(comment_id);
+    this.dataBase
+      .GetAllComments(comment_id)
+      .subscribe((result: StandardComments[]) => {
+        this.commentlist$ = result;
+        console.log(this.commentlist$);
+      });
   }
 }

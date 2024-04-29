@@ -5,4 +5,3 @@ export interface UserSignUp {
   gender: string;
   status: string;
 }
-//
