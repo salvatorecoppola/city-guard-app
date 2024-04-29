@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   postlist$: Post[] = [];
   comment: userComments;
   commentlist$: userComments[];
+  Standardcommentlist$: userComments[];
   post_id: number;
   comment_id: number;
 
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
     this.showComment;
     this.dataBase.GetAllComments;
     this.onComment;
+    this.onCommentStandard;
     this.dataBase.returnStandardPosts();
     this.GetAll();
     this.dataBase.Refreshrequired.subscribe((response) => {
@@ -94,6 +96,40 @@ export class HomeComponent implements OnInit {
     console.log('Comment ID:', commentId);
   }
 
+  //In this function we are going
+  //to be able to write comments under
+  //the post received bi the api
+  onCommentStandard(form: any, postId: number) {
+    //taking the required data for the POST request
+    const body = form.body;
+    this.comment = {
+      name: JSON.parse(localStorage.getItem('user')).name,
+      email: JSON.parse(localStorage.getItem('user')).email,
+      body: body,
+      post_id: postId,
+    };
+    //now send them in our database
+    //and make the POST request
+    this.dataBase
+      .commentStandardPost(this.comment)
+      .subscribe((salto: StandardComments[]) => {
+        salto;
+      });
+    //commentaStandardPost we will send back our processed data
+    // and we call another function that return the comment that
+    // we have made under our post
+    this.dataBase.GetAllComments2().subscribe((salto: StandardComments[]) => {
+      this.Standardcommentlist$ = salto;
+      console.log(salto);
+    });
+
+    //here we are making the refresh of comments for
+    //having them in real time
+    this.dataBase.Refreshrequired.subscribe((response) => {
+      this.onCommentStandard;
+    });
+  }
+
   //The custom comment logic
   onComment(form: any, postId: number) {
     //taking the required data for the POST request
@@ -133,5 +169,9 @@ export class HomeComponent implements OnInit {
         this.commentlist$ = result;
         console.log(this.commentlist$);
       });
+    this.dataBase.GetAllComments2().subscribe((salto: StandardComments[]) => {
+      this.Standardcommentlist$ = salto;
+      console.log(this.Standardcommentlist$);
+    });
   }
 }

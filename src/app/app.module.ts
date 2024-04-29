@@ -16,9 +16,16 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { DatabaseService } from './services/database.service';
 import { SignupComponent } from './components/signup/signup.component';
+import { UserComponent } from './components/user/user.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, SignupComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HomeComponent,
+    SignupComponent,
+    UserComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
