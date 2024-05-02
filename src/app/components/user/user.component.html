@@ -14,18 +14,17 @@ execute routing for our user -->
     take and pass it in to the address bar
     and then use it to make API call   -->
     <a routerLink="/user/{{ user.id }}"
-      ><p>{{ user.email }}</p></a
+      ><p>{{ user.name }}</p></a
     >
-    <p>{{ user.name }}</p>
-    <p>{{ user.gender }}</p>
-    <p>{{ user.status }}</p>
-    <p>{{ user.id }}</p>
   </div>
 </div>
 
 <ng-template #profiloContatto>
   <div *ngIf="userDetail">
     <p>Profilo di {{ userDetail.name }}</p>
-    {{ userDetail.email }}
+    <p>{{ userDetail.email }}</p>
+    <p>{{ userDetail.gender }}</p>
+    <p>{{ userDetail.status }}</p>
+    <p>{{ userDetail.id }}</p>
   </div>
 </ng-template>

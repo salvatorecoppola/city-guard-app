@@ -33,11 +33,12 @@ export class DatabaseService {
   }
 
   returnUser() {
+    const url = 'https://gorest.co.in/public/v2/users?page=1&per_page=100';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
     });
-    return this.http.get(this.url, { headers });
+    return this.http.get(url, { headers });
   }
 
   returnUser2(id: number) {
@@ -50,11 +51,13 @@ export class DatabaseService {
   }
 
   returnComments() {
-    const url = 'https://gorest.co.in/public/v2/comments';
+    const url = 'https://gorest.co.in/public/v2/comments?page=1&per_page=100';
     return this.http.get(url);
   }
   returnStandardPosts() {
-    return this.http.get('https://gorest.co.in/public/v2/posts');
+    return this.http.get(
+      'https://gorest.co.in/public/v2/posts?page=1&per_page=100'
+    );
   }
 
   createNewPost(newPost: {
@@ -76,6 +79,38 @@ export class DatabaseService {
       })
     );
   }
+  onDeletePost(id: number) {
+    const url = `https://gorest.co.in/public/v2/posts/${id}`;
+    console.log(url);
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
+    });
+
+    return this.http.delete(url, { headers }).pipe(
+      tap((response: any) => {
+        this.GetAll;
+        this._refreshrequired.next();
+      })
+    );
+  }
+  // onDeleteComment(id: number) {
+  //   const url = `https://gorest.co.in/public/v2/posts/${id}/comments`;
+  //   console.log(url);
+
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
+  //   });
+
+  //   return this.http.delete(url, { headers }).pipe(
+  //     tap((response: any) => {
+  //       this.GetAll;
+  //       this._refreshrequired.next();
+  //     })
+  //   );
+  // }
 
   GetAll() {
     const url = `https://gorest.co.in/public/v2/users/${this.nani}/posts`;

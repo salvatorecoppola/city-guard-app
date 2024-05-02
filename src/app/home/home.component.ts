@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   constructor(private dataBase: DatabaseService) {}
 
   ngOnInit(): void {
-    this.showComment;
+    this.showComment();
     this.dataBase.GetAllComments;
     this.onComment;
     this.onCommentStandard;
@@ -54,14 +54,13 @@ export class HomeComponent implements OnInit {
       .returnStandardPosts()
       .subscribe((standardPost: StandardPosts[]) => {
         this.standardPosts = standardPost;
+        console.log(this.standardPosts);
       });
     //Retrieving standard comments from API;
     this.dataBase
       .returnComments()
-      .subscribe((standardComments: StandardComments[]) => {
-        this.standardComments = Object.keys(standardComments).map((key) => {
-          return standardComments[key];
-        });
+      .subscribe((standardComment: StandardComments[]) => {
+        this.standardComments = standardComment;
       });
   }
 
@@ -98,7 +97,7 @@ export class HomeComponent implements OnInit {
 
   //In this function we are going
   //to be able to write comments under
-  //the post received bi the api
+  //the post received by the api
   onCommentStandard(form: any, postId: number) {
     //taking the required data for the POST request
     const body = form.body;
@@ -126,7 +125,7 @@ export class HomeComponent implements OnInit {
     //here we are making the refresh of comments for
     //having them in real time
     this.dataBase.Refreshrequired.subscribe((response) => {
-      this.onCommentStandard;
+      this.showComment();
     });
   }
 
@@ -154,24 +153,26 @@ export class HomeComponent implements OnInit {
       .GetAllComments(this.comment.post_id)
       .subscribe((result: StandardComments[]) => {
         this.commentlist$ = result;
+        console.log(this.commentlist$);
       });
     //here we are making the refresh of comments for
     //having them in real time
     this.dataBase.Refreshrequired.subscribe((response) => {
-      this.onComment;
+      this.showComment();
     });
   }
-  showComment(comment_id: number) {
-    console.log(comment_id);
-    this.dataBase
-      .GetAllComments(comment_id)
-      .subscribe((result: StandardComments[]) => {
-        this.commentlist$ = result;
-        console.log(this.commentlist$);
-      });
+  showComment() {
     this.dataBase.GetAllComments2().subscribe((salto: StandardComments[]) => {
       this.Standardcommentlist$ = salto;
-      console.log(this.Standardcommentlist$);
+      console.log(salto);
     });
   }
+  onDeletePost(id: number) {
+    this.dataBase.onDeletePost(id).subscribe();
+    console.log(id);
+  }
+  // onDeleteComment(id: number) {
+  //   this.dataBase.onDeleteComment(id).subscribe();
+  //   console.log(id);
+  // }
 }

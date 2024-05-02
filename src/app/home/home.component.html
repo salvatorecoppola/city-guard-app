@@ -1,23 +1,30 @@
 <a routerLink="user"> USER</a>
 
 <div *ngFor="let post of standardPosts">
-  <h1>post</h1>
   <h2>{{ post.title }}</h2>
   <p>{{ post.body }}</p>
+  <div *ngFor="let user of userSignUp">
+    <div *ngIf="user.id == post.user_id">
+      <h1 textcolor="green">{{ user.name }}</h1>
+    </div>
+  </div>
 
   <div *ngFor="let comment of standardComments">
     <div *ngIf="comment.post_id === post.id">
       <h6>{{ comment.body }}</h6>
+      <h6>{{ comment.name }}</h6>
     </div>
   </div>
+
   <div *ngFor="let ok of Standardcommentlist$">
     <div *ngIf="ok.post_id === post.id">
       <p>{{ ok.body }}</p>
     </div>
   </div>
+
   <form
     #commentForm="ngForm"
-    (click)="getCommentId(post.id); showComment(post.id)"
+    (click)="getCommentId(post.id)"
     (ngSubmit)="onCommentStandard(commentForm.value, post.id)"
   >
     <label>Body</label>
@@ -34,23 +41,20 @@
   <button type="submit">ARCIBOTTONEMALVAGIO</button>
 </form>
 
-<!--
-<input type="text" [(ngModel)]="inputValue" />
-<button (click)="passValue($event)">passavalore</button>
-<div>{{ outputValue }}</div> -->
 <div *ngFor="let post of postlist$">
   <h2>{{ post.title }}</h2>
   <p>{{ post.body }}</p>
-  <!-- <button (click)="getCommentId(post.id)">Get Comment ID</button> -->
-  <div *ngFor="let comment of commentlist$">
+
+  <div *ngFor="let comment of Standardcommentlist$">
     <div *ngIf="comment.post_id === post.id">
       <p>{{ comment.body }}</p>
+      <!-- <button (click)="onDeleteComment(comment.id)">CANCELLA COMMENTO</button> -->
     </div>
   </div>
   <!-- Form per aggiungere un nuovo commento sotto il post -->
   <form
     #commentForm="ngForm"
-    (click)="getCommentId(post.id); showComment(post.id)"
+    (click)="getCommentId(post.id)"
     (ngSubmit)="onComment(commentForm.value, post.id)"
   >
     <label>Comment</label>
