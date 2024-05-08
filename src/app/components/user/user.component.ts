@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSignUp } from '../../models/userSignup';
 import { DatabaseService } from '../../services/database.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { userFromSignup } from '../../models/userFromSignup';
 import { mergeMap } from 'rxjs';
 
@@ -18,7 +18,8 @@ export class UserComponent implements OnInit {
 
   constructor(
     private dataBase: DatabaseService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +52,13 @@ export class UserComponent implements OnInit {
     this.dataBase.returnUser2(this.userId).subscribe((data: any) => {
       this.userDetail = data;
     });
+  } //and then make display it in HTML
+
+  deleteUser(index: number) {
+    //5 make the call happen
+    this.dataBase.deleteUser(this.userId).subscribe((data: any) => {
+      this.userDetail = data;
+      return this.router.navigate(['/user']);
+    });
   }
-  //and then make display it in HTML
 }

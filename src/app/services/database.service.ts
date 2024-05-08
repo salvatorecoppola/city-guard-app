@@ -1,19 +1,23 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
 import { UserSignUp } from '../models/userSignup';
 import { userComments } from '../models/comments';
+import { TokenInterceptorService } from '../components/token/token-interceptor.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
   persona: any;
-  nani = JSON.parse(localStorage.getItem('user')).id;
+
+  constructor(
+    private httpBackend: HttpBackend,
+    private http: HttpClient,
+    public token: TokenInterceptorService
+  ) {}
 
   url = 'https://gorest.co.in/public/v2/users';
-
-  constructor(private http: HttpClient) {}
 
   private _refreshrequired = new Subject<void>();
 
@@ -24,39 +28,30 @@ export class DatabaseService {
   signUp(body: {}) {
     const url = 'https://gorest.co.in/public/v2/users';
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-
-    return this.http.post(url, body, { headers });
+    return this.http.post(url, body);
   }
 
   returnUser() {
-    const url = 'https://gorest.co.in/public/v2/users?page=1&per_page=100';
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-    return this.http.get(url, { headers });
+    const newHttpClient = new HttpClient(this.httpBackend);
+    return newHttpClient.get(
+      'https://gorest.co.in/public/v2/users?page=1&per_page=100'
+    );
   }
 
   returnUser2(id: number) {
     const url = `https://gorest.co.in/public/v2/users/${id}`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-    return this.http.get(url, { headers });
+
+    return this.http.get(url);
   }
 
   returnComments() {
-    const url = 'https://gorest.co.in/public/v2/comments?page=1&per_page=100';
+    const url = 'https://gorest.co.in/public/v2/comments';
     return this.http.get(url);
   }
   returnStandardPosts() {
-    return this.http.get(
-      'https://gorest.co.in/public/v2/posts?page=1&per_page=100'
+    const newHttpClient = new HttpClient(this.httpBackend);
+    return newHttpClient.get(
+      'https://gorest.co.in/public/v2/posts?page=1&per_page=20 '
     );
   }
 
@@ -64,17 +59,13 @@ export class DatabaseService {
     title: string;
     body: string;
   }): Observable<UserSignUp> {
-    const url = `https://gorest.co.in/public/v2/users/${this.nani}/posts`;
+    const nani = JSON.parse(localStorage.getItem('user')).id;
+    const url = `https://gorest.co.in/public/v2/users/${nani}/posts`;
     console.log(url);
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-
-    return this.http.post(url, newPost, { headers }).pipe(
+    return this.http.post(url, newPost).pipe(
       tap((response: any) => {
-        this.GetAll();
+        this.GetNewPost();
         this.Refreshrequired.next();
       })
     );
@@ -83,51 +74,30 @@ export class DatabaseService {
     const url = `https://gorest.co.in/public/v2/posts/${id}`;
     console.log(url);
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-
-    return this.http.delete(url, { headers }).pipe(
+    return this.http.delete(url).pipe(
       tap((response: any) => {
         this.GetAll;
         this._refreshrequired.next();
       })
     );
   }
-  // onDeleteComment(id: number) {
-  //   const url = `https://gorest.co.in/public/v2/posts/${id}/comments`;
-  //   console.log(url);
 
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-  //   });
+  GetNewPost() {
+    const nani = JSON.parse(localStorage.getItem('user')).id;
+    const url = `https://gorest.co.in/public/v2/users/${nani}/posts?page=1&per_page=20 `;
 
-  //   return this.http.delete(url, { headers }).pipe(
-  //     tap((response: any) => {
-  //       this.GetAll;
-  //       this._refreshrequired.next();
-  //     })
-  //   );
-  // }
-
+    return this.http.get(url);
+  }
   GetAll() {
-    const url = `https://gorest.co.in/public/v2/users/${this.nani}/posts`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-    return this.http.get(url, { headers });
+    const url = `https://gorest.co.in/public/v2/posts?page=1&per_page=20 `;
+
+    return this.http.get(url);
   }
   commentaPost(comment: userComments): Observable<any> {
     const url = `https://gorest.co.in/public/v2/posts/${comment.post_id}/comments`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
+
     console.log(url);
-    return this.http.post(url, comment, { headers }).pipe(
+    return this.http.post(url, comment).pipe(
       tap((response: any) => {
         this.GetAllComments;
         this.Refreshrequired.next();
@@ -136,31 +106,33 @@ export class DatabaseService {
   }
   GetAllComments(comment: any) {
     const url = `https://gorest.co.in/public/v2/posts/${comment}/comments`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-    return this.http.get(url, { headers });
+
+    return this.http.get(url);
   }
   GetAllComments2() {
     const url = `https://gorest.co.in/public/v2/comments`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
-    return this.http.get(url, { headers });
+
+    return this.http.get(url);
   }
   commentStandardPost(comment: userComments): Observable<any> {
     const url = `https://gorest.co.in/public/v2/posts/${comment.post_id}/comments`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer c0ee8a9640f985ebdce1b6e529043ac347f0f1e62ebd980a6dfe93aff7827693`,
-    });
+
     console.log(url);
-    return this.http.post(url, comment, { headers }).pipe(
+    return this.http.post(url, comment).pipe(
       tap((response: any) => {
         this.GetAllComments;
         this.Refreshrequired.next();
+      })
+    );
+  }
+  deleteUser(id: number) {
+    const url = `https://gorest.co.in/public/v2/users/${id}`;
+    console.log(url);
+
+    return this.http.delete(url).pipe(
+      tap((response: any) => {
+        this.GetAll;
+        this._refreshrequired.next();
       })
     );
   }

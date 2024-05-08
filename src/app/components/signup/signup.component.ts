@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { DatabaseService } from '../../services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
+import { TokenInterceptorService } from '../token/token-interceptor.service';
 
 @Component({
   selector: 'app-signup',
@@ -45,6 +46,10 @@ export class SignupComponent {
     const email = form.value.email;
     const gender = form.value.gender;
     const status = form.value.status;
+    const token = localStorage.setItem('token', form.value.token);
+
+    console.log(token);
+
     //1
     this.DataService.signUp({
       name: name,
@@ -53,6 +58,7 @@ export class SignupComponent {
       status: status,
     }).subscribe((data: any) => {
       //2
+      console.log(token);
       this.authService.createUser(
         data.name,
         data.email,

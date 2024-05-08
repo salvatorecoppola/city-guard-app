@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   standardPosts: StandardPosts[] = [];
   standardComments: StandardComments[] = [];
   postlist$: Post[] = [];
+  post$: any;
   comment: userComments;
   commentlist$: userComments[];
   Standardcommentlist$: userComments[];
@@ -31,6 +32,11 @@ export class HomeComponent implements OnInit {
     this.onCommentStandard;
     this.dataBase.returnStandardPosts();
     this.GetAll();
+    this.GetNewPost();
+    this.dataBase.Refreshrequired.subscribe((response) => {
+      this.GetNewPost();
+    });
+
     this.dataBase.Refreshrequired.subscribe((response) => {
       this.GetAll();
     });
@@ -80,9 +86,16 @@ export class HomeComponent implements OnInit {
   //and here we will display them in to HTML
   //calling in ngOnInit and make sure refresh it
   //every time we write a post.
+  GetNewPost() {
+    this.dataBase.GetNewPost().subscribe((data: Post[]) => {
+      this.postlist$ = data;
+      return data;
+    });
+  }
+
   GetAll() {
     this.dataBase.GetAll().subscribe((data: Post[]) => {
-      this.postlist$ = data;
+      this.post$ = data;
       return data;
     });
   }
@@ -171,8 +184,4 @@ export class HomeComponent implements OnInit {
     this.dataBase.onDeletePost(id).subscribe();
     console.log(id);
   }
-  // onDeleteComment(id: number) {
-  //   this.dataBase.onDeleteComment(id).subscribe();
-  //   console.log(id);
-  // }
 }

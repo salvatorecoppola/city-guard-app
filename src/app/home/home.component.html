@@ -48,7 +48,6 @@
   <div *ngFor="let comment of Standardcommentlist$">
     <div *ngIf="comment.post_id === post.id">
       <p>{{ comment.body }}</p>
-      <!-- <button (click)="onDeleteComment(comment.id)">CANCELLA COMMENTO</button> -->
     </div>
   </div>
   <!-- Form per aggiungere un nuovo commento sotto il post -->

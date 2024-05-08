@@ -3,6 +3,7 @@ import { DatabaseService } from '../services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { userFromSignup } from '../models/userFromSignup';
 import { userFromLogin } from '../models/userFromLogin';
+import { SignupComponent } from '../components/signup/signup.component';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,7 @@ export class AuthService {
   //3
   createUser(name: string, email: string, gender: string, status: string) {
     this.userFromSignup = new userFromSignup(name, email, gender, status);
+
     if (this.userFromSignup) {
       return (this.signup = true);
     } else return false;

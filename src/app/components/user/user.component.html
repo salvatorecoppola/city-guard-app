@@ -26,5 +26,6 @@ execute routing for our user -->
     <p>{{ userDetail.gender }}</p>
     <p>{{ userDetail.status }}</p>
     <p>{{ userDetail.id }}</p>
+    <button (click)="deleteUser(userDetail.id)">DELETE USER</button>
   </div>
 </ng-template>
