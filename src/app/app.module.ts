@@ -16,9 +16,20 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { DatabaseService } from './services/database.service';
 import { SignupComponent } from './components/signup/signup.component';
+import { UserComponent } from './components/user/user.component';
+import { TokenInterceptorService } from './components/token/token-interceptor.service';
+import { AuthService } from './auth/auth.service';
+import { PersonalAccountDetailComponent } from './components/personal-account-detail/personal-account-detail.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, HomeComponent, SignupComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    HomeComponent,
+    SignupComponent,
+    UserComponent,
+    PersonalAccountDetailComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,7 +42,15 @@ import { SignupComponent } from './components/signup/signup.component';
     HttpClientModule,
     BrowserAnimationsModule,
   ],
-  providers: [DatabaseService],
+  providers: [
+    SignupComponent,
+
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
       name: new FormControl(null, Validators.required),
       gender: new FormControl(''),
       status: new FormControl(''),
+      token: new FormControl(''),
     });
   }
 

@@ -1,1 +1,63 @@
-<h1>Fess e mammt</h1>
+<a routerLink="user"> USER</a>
+
+<div *ngFor="let post of standardPosts">
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+  <div *ngFor="let user of userSignUp">
+    <div *ngIf="user.id == post.user_id">
+      <h1 textcolor="green">{{ user.name }}</h1>
+    </div>
+  </div>
+
+  <div *ngFor="let comment of standardComments">
+    <div *ngIf="comment.post_id === post.id">
+      <h6>{{ comment.body }}</h6>
+      <h6>{{ comment.name }}</h6>
+    </div>
+  </div>
+
+  <div *ngFor="let ok of Standardcommentlist$">
+    <div *ngIf="ok.post_id === post.id">
+      <p>{{ ok.body }}</p>
+    </div>
+  </div>
+
+  <form
+    #commentForm="ngForm"
+    (click)="getCommentId(post.id)"
+    (ngSubmit)="onCommentStandard(commentForm.value, post.id)"
+  >
+    <label>Body</label>
+    <input type="text" name="body" ngModel required />
+    <button type="submit">Comment</button>
+  </form>
+</div>
+
+<form #postForm="ngForm" (ngSubmit)="onPost(postForm.value)">
+  <label>title</label>
+  <input type="text" name="title" ngModel />
+  <label>body</label>
+  <input type="text" name="body" ngModel />
+  <button type="submit">ARCIBOTTONEMALVAGIO</button>
+</form>
+
+<div *ngFor="let post of postlist$">
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+
+  <div *ngFor="let comment of Standardcommentlist$">
+    <div *ngIf="comment.post_id === post.id">
+      <p>{{ comment.body }}</p>
+    </div>
+  </div>
+  <!-- Form per aggiungere un nuovo commento sotto il post -->
+  <form
+    #commentForm="ngForm"
+    (click)="getCommentId(post.id)"
+    (ngSubmit)="onComment(commentForm.value, post.id)"
+  >
+    <label>Comment</label>
+    <input type="text" name="body" ngModel required />
+    <button type="submit">Comment</button>
+  </form>
+</div>

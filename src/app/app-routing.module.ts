@@ -4,6 +4,8 @@ import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { authGuard } from './auth/auth.guard';
 import { SignupComponent } from './components/signup/signup.component';
+import { UserComponent } from './components/user/user.component';
+import { PersonalAccountDetailComponent } from './components/personal-account-detail/personal-account-detail.component';
 
 const routes: Routes = [
   {
@@ -19,6 +21,19 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [authGuard],
+  },
+
+  {
+    path: 'user',
+    component: UserComponent,
+  },
+  {
+    path: 'user/:id',
+    component: UserComponent,
+  },
+  {
+    path: 'accountdetail',
+    component: PersonalAccountDetailComponent,
   },
 ];
 
