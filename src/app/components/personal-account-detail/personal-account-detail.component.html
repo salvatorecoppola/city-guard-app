@@ -1,3 +1,36 @@
-<div *ngFor="let user of userSignUp">
-  <p>{{ user }}</p>
+<div *ngIf="userSignUp">
+  <ng-container *ngIf="!isEditing; else editModeTemplate">
+    <!-- Paragrafo normale -->
+    <p>{{ userSignUp.id }}</p>
+    <p>{{ userSignUp.name }}</p>
+    <p>{{ userSignUp.email }}</p>
+    <p>{{ userSignUp.gender }}</p>
+    <p>{{ userSignUp.status }}</p>
+    <button (click)="toggleEditMode()">Modifica</button>
+  </ng-container>
+
+  <ng-template #editModeTemplate>
+    <!-- Form per la modifica -->
+    <form [formGroup]="homeform" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <mat-label>{{ userSignUp.name }}</mat-label>
+        <input matInput type="email" name="name" formControlName="name" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ userSignUp.email }}</mat-label>
+        <input matInput type="email" name="email" formControlName="email" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ userSignUp.gender }}</mat-label>
+        <input matInput type="gender" name="gender" formControlName="gender" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ userSignUp.status }}</mat-label>
+        <input matInput type="status" name="status" formControlName="status" />
+      </mat-form-field>
+
+      <button type="submit">Salva</button>
+      <button type="button" (click)="toggleEditMode()">Annulla</button>
+    </form>
+  </ng-template>
 </div>

@@ -48,8 +48,6 @@ export class SignupComponent {
     const status = form.value.status;
     const token = localStorage.setItem('token', form.value.token);
 
-    console.log(token);
-
     //1
     this.DataService.signUp({
       name: name,
@@ -58,7 +56,6 @@ export class SignupComponent {
       status: status,
     }).subscribe((data: any) => {
       //2
-      console.log(token);
       this.authService.createUser(
         data.name,
         data.email,

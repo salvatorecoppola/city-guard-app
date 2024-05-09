@@ -1,7 +1,7 @@
 import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
-import { UserSignUp } from '../models/userSignup';
+import { User, UserSignUp } from '../models/userSignup';
 import { userComments } from '../models/comments';
 import { TokenInterceptorService } from '../components/token/token-interceptor.service';
 
@@ -34,11 +34,16 @@ export class DatabaseService {
   returnUser() {
     const newHttpClient = new HttpClient(this.httpBackend);
     return newHttpClient.get(
-      'https://gorest.co.in/public/v2/users?page=1&per_page=100'
+      'https://gorest.co.in/public/v2/users?page=1&per_page=5'
     );
   }
 
   returnUser2(id: number) {
+    const url = `https://gorest.co.in/public/v2/users`;
+
+    return this.http.get(url);
+  }
+  returnUser3(id: number) {
     const url = `https://gorest.co.in/public/v2/users/${id}`;
 
     return this.http.get(url);
@@ -135,5 +140,10 @@ export class DatabaseService {
         this._refreshrequired.next();
       })
     );
+  }
+  patchUser(user: User) {
+    const url = `https://gorest.co.in/public/v2/users/${user.id}`;
+
+    return this.http.patch<User>(url, user);
   }
 }
