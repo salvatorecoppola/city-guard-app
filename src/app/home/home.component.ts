@@ -5,6 +5,10 @@ import { UserSignUp } from '../models/userSignup';
 import { StandardComments, userComments } from '../models/comments';
 import { StandardPosts } from '../models/standardPosts';
 import { Post } from '../models/post';
+import { UserService } from '../services/api-services/user.service';
+import { NewPostService } from '../services/api-services/new-post.service';
+import { CommentsService } from '../services/api-services/comments.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +18,7 @@ import { Post } from '../models/post';
 export class HomeComponent implements OnInit {
   userSignUp: UserSignUp[] = [];
   standardPosts: StandardPosts[] = [];
-  standardComments: StandardComments[] = [];
+  standardComments: StandardComments[];
   postlist$: Post[] = [];
   post$: any;
   comment: userComments;
@@ -22,26 +26,38 @@ export class HomeComponent implements OnInit {
   Standardcommentlist$: userComments[];
   post_id: number;
   comment_id: number;
+  searchValue: string = '';
+  post: Post[] = [];
+  searchForm = this.fb.nonNullable.group({
+    searchValue: '',
+  });
 
-  constructor(private dataBase: DatabaseService) {}
+  constructor(
+    private dataBase: DatabaseService,
+    private userService: UserService,
+    private postService: NewPostService,
+    private commentService: CommentsService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
+    this.fetchData();
     this.showComment();
-    this.dataBase.GetAllComments;
+    this.commentService.GetAllComments;
     this.onComment;
     this.onCommentStandard;
-    this.dataBase.returnStandardPosts();
+    this.postService.returnStandardPosts();
     this.GetAll();
     this.GetNewPost();
-    this.dataBase.Refreshrequired.subscribe((response) => {
+    this.postService.Refreshrequired.subscribe((response) => {
       this.GetNewPost();
     });
 
-    this.dataBase.Refreshrequired.subscribe((response) => {
+    this.postService.Refreshrequired.subscribe((response) => {
       this.GetAll();
     });
 
-    this.dataBase.returnUser().subscribe((data: any) => {
+    this.userService.returnUser().subscribe((data: any) => {
       this.userSignUp = data;
       console.log(data);
       const fratm = data[0].id;
@@ -56,14 +72,14 @@ export class HomeComponent implements OnInit {
       return data;
     });
     //Retrieving standard posts from API;
-    this.dataBase
+    this.postService
       .returnStandardPosts()
       .subscribe((standardPost: StandardPosts[]) => {
         this.standardPosts = standardPost;
         console.log(this.standardPosts);
       });
     //Retrieving standard comments from API;
-    this.dataBase
+    this.commentService
       .returnComments()
       .subscribe((standardComment: StandardComments[]) => {
         this.standardComments = standardComment;
@@ -77,7 +93,7 @@ export class HomeComponent implements OnInit {
   //wich will send data to the server
   onPost(newPost: { title: string; body: string }) {
     //and make the refresh of the function nested in it
-    this.dataBase.createNewPost(newPost).subscribe((data: any) => {
+    this.postService.createNewPost(newPost).subscribe((data: any) => {
       newPost = data;
     });
   }
@@ -87,14 +103,14 @@ export class HomeComponent implements OnInit {
   //calling in ngOnInit and make sure refresh it
   //every time we write a post.
   GetNewPost() {
-    this.dataBase.GetNewPost().subscribe((data: Post[]) => {
+    this.postService.GetNewPost().subscribe((data: Post[]) => {
       this.postlist$ = data;
       return data;
     });
   }
 
   GetAll() {
-    this.dataBase.GetAll().subscribe((data: Post[]) => {
+    this.postService.GetAll().subscribe((data: Post[]) => {
       this.post$ = data;
       return data;
     });
@@ -122,22 +138,29 @@ export class HomeComponent implements OnInit {
     };
     //now send them in our database
     //and make the POST request
-    this.dataBase
+    this.commentService
       .commentStandardPost(this.comment)
       .subscribe((salto: StandardComments[]) => {
+        if (this.Standardcommentlist$) {
+          this.Standardcommentlist$[0].name.length == 0;
+        } else {
+          this.Standardcommentlist$[0].name = 'mammt';
+        }
+        console.log(this.Standardcommentlist$[0].name);
         salto;
       });
     //commentaStandardPost we will send back our processed data
     // and we call another function that return the comment that
     // we have made under our post
-    this.dataBase.GetAllComments2().subscribe((salto: StandardComments[]) => {
-      this.Standardcommentlist$ = salto;
-      console.log(salto);
-    });
+    this.commentService
+      .GetAllComments2()
+      .subscribe((salto: StandardComments[]) => {
+        this.Standardcommentlist$ = salto;
+      });
 
     //here we are making the refresh of comments for
     //having them in real time
-    this.dataBase.Refreshrequired.subscribe((response) => {
+    this.commentService.Refreshrequired.subscribe((response) => {
       this.showComment();
     });
   }
@@ -154,7 +177,7 @@ export class HomeComponent implements OnInit {
     };
     //now send them in our database
     //and make the POST request
-    this.dataBase
+    this.commentService
       .commentaPost(this.comment)
       .subscribe((result: StandardComments[]) => {
         result;
@@ -162,7 +185,7 @@ export class HomeComponent implements OnInit {
     //commentaPost we will send back our processed data
     // and we call another function that return the comment that
     // we have made under our post
-    this.dataBase
+    this.commentService
       .GetAllComments(this.comment.post_id)
       .subscribe((result: StandardComments[]) => {
         this.commentlist$ = result;
@@ -170,18 +193,31 @@ export class HomeComponent implements OnInit {
       });
     //here we are making the refresh of comments for
     //having them in real time
-    this.dataBase.Refreshrequired.subscribe((response) => {
+    this.commentService.Refreshrequired.subscribe((response) => {
       this.showComment();
     });
   }
   showComment() {
-    this.dataBase.GetAllComments2().subscribe((salto: StandardComments[]) => {
-      this.Standardcommentlist$ = salto;
-      console.log(salto);
+    this.commentService
+      .GetAllComments2()
+      .subscribe((salto: StandardComments[]) => {
+        this.Standardcommentlist$ = salto;
+        if (salto) console.log(salto);
+      });
+  }
+  // onDeletePost(id: number) {
+  //   this.postService.onDeletePost(id).subscribe();
+  //   console.log(id);
+  // }
+
+  fetchData(): void {
+    this.postService.searchPost(this.searchValue).subscribe((post) => {
+      this.post = post;
     });
   }
-  onDeletePost(id: number) {
-    this.dataBase.onDeletePost(id).subscribe();
-    console.log(id);
+
+  onSearchSubmit(): void {
+    this.searchValue = this.searchForm.value.searchValue;
+    this.fetchData();
   }
 }

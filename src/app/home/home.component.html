@@ -1,5 +1,23 @@
 <a routerLink="user"> USER</a>
 
+<div class="container">
+  <form
+    [formGroup]="searchForm"
+    class="searchBar"
+    (ngSubmit)="onSearchSubmit()"
+  >
+    <input
+      type="text"
+      placeholder="search..."
+      formControlName="searchValue"
+      class="searchBarInput"
+    />
+  </form>
+  <div class="articlesTable">
+    <div class="articles" *ngFor="let p of post">{{ p.title }}</div>
+  </div>
+</div>
+
 <div *ngFor="let post of standardPosts">
   <h2>{{ post.title }}</h2>
   <p>{{ post.body }}</p>
@@ -9,16 +27,17 @@
     </div>
   </div>
 
-  <div *ngFor="let comment of standardComments">
+  <!-- <div *ngFor="let comment of standardComments">
     <div *ngIf="comment.post_id === post.id">
       <h6>{{ comment.body }}</h6>
       <h6>{{ comment.name }}</h6>
     </div>
-  </div>
+  </div> -->
 
   <div *ngFor="let ok of Standardcommentlist$">
     <div *ngIf="ok.post_id === post.id">
       <p>{{ ok.body }}</p>
+      {{ ok.name }}
     </div>
   </div>
 
@@ -48,6 +67,7 @@
   <div *ngFor="let comment of Standardcommentlist$">
     <div *ngIf="comment.post_id === post.id">
       <p>{{ comment.body }}</p>
+      <p>{{ comment.name }}</p>
     </div>
   </div>
   <!-- Form per aggiungere un nuovo commento sotto il post -->
