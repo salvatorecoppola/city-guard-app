@@ -2,7 +2,7 @@ import { HttpBackend, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
 import { TokenInterceptorService } from '../../components/token/token-interceptor.service';
-import { User, UserSignUp } from '../../models/userSignup';
+import { User, User3, UserSignUp } from '../../models/userSignup';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,9 @@ export class UserService {
   }
   returnUser() {
     const newHttpClient = new HttpClient(this.httpBackend);
-    return newHttpClient.get('https://gorest.co.in/public/v2/users');
+    return newHttpClient.get(
+      'https://gorest.co.in/public/v2/users?page=1&per_page=100'
+    );
   }
 
   returnUser2(id: number) {
@@ -67,9 +69,9 @@ export class UserService {
 
     return this.http.patch<User>(url, user);
   }
-  GetAll() {
-    const url = `https://gorest.co.in/public/v2/posts?page=1&per_page=20 `;
+  GetAll(): Observable<User3[]> {
+    const url = `https://gorest.co.in/public/v2/users?page=1&per_page=100 `;
 
-    return this.http.get(url);
+    return this.http.get<User3[]>(url);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { HttpClient } from '@angular/common/http';
-import { UserSignUp } from '../models/userSignup';
+import { User, User3, UserSignUp } from '../models/userSignup';
 import { StandardComments, userComments } from '../models/comments';
 import { StandardPosts } from '../models/standardPosts';
 import { Post } from '../models/post';
@@ -16,7 +16,7 @@ import { FormBuilder } from '@angular/forms';
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  userSignUp: UserSignUp[] = [];
+  userSignUp: UserSignUp[];
   standardPosts: StandardPosts[] = [];
   standardComments: StandardComments[];
   postlist$: Post[] = [];
@@ -28,9 +28,11 @@ export class HomeComponent implements OnInit {
   comment_id: number;
   searchValue: string = '';
   post: Post[] = [];
+  user: User3[] = [];
   searchForm = this.fb.nonNullable.group({
     searchValue: '',
   });
+  noComment: string = '';
 
   constructor(
     private dataBase: DatabaseService,
@@ -59,17 +61,6 @@ export class HomeComponent implements OnInit {
 
     this.userService.returnUser().subscribe((data: any) => {
       this.userSignUp = data;
-      console.log(data);
-      const fratm = data[0].id;
-      // Retrieve the object from localStorage
-      const retrievedUser = JSON.parse(localStorage.getItem('user'));
-      retrievedUser.id = fratm;
-      // Convert the modified object back to a JSON string
-      const updatedDataString = JSON.stringify(retrievedUser);
-      // Save the updated object back to the localStorage
-      localStorage.setItem('user', updatedDataString);
-      console.log(updatedDataString);
-      return data;
     });
     //Retrieving standard posts from API;
     this.postService
@@ -105,6 +96,7 @@ export class HomeComponent implements OnInit {
   GetNewPost() {
     this.postService.GetNewPost().subscribe((data: Post[]) => {
       this.postlist$ = data;
+      console.log(this.postlist$);
       return data;
     });
   }
@@ -141,12 +133,7 @@ export class HomeComponent implements OnInit {
     this.commentService
       .commentStandardPost(this.comment)
       .subscribe((salto: StandardComments[]) => {
-        if (this.Standardcommentlist$) {
-          this.Standardcommentlist$[0].name.length == 0;
-        } else {
-          this.Standardcommentlist$[0].name = 'mammt';
-        }
-        console.log(this.Standardcommentlist$[0].name);
+        this.Standardcommentlist$;
         salto;
       });
     //commentaStandardPost we will send back our processed data
@@ -213,6 +200,11 @@ export class HomeComponent implements OnInit {
   fetchData(): void {
     this.postService.searchPost(this.searchValue).subscribe((post) => {
       this.post = post;
+      console.log(this.post);
+      this.userService.GetAll().subscribe((user) => {
+        this.user = user;
+        console.log(this.user);
+      });
     });
   }
 

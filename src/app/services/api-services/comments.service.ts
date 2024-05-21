@@ -25,7 +25,7 @@ export class CommentsService {
   }
 
   returnComments() {
-    const url = 'https://gorest.co.in/public/v2/comments';
+    const url = 'https://gorest.co.in/public/v2/comments?page=1&per_page=100';
     return this.http.get(url);
   }
   commentaPost(comment: userComments): Observable<any> {

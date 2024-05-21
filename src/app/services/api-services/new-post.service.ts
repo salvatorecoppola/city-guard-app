@@ -28,7 +28,7 @@ export class NewPostService {
   returnStandardPosts() {
     const newHttpClient = new HttpClient(this.httpBackend);
     return newHttpClient.get(
-      'https://gorest.co.in/public/v2/posts?page=1&per_page=100 '
+      'https://gorest.co.in/public/v2/posts?page=1&per_page=100'
     );
   }
 
@@ -56,7 +56,7 @@ export class NewPostService {
   }
 
   GetAll() {
-    const url = `https://gorest.co.in/public/v2/posts?page=1&per_page=20 `;
+    const url = `https://gorest.co.in/public/v2/posts `;
 
     return this.http.get(url);
   }

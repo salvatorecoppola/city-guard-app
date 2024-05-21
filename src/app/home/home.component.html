@@ -14,42 +14,54 @@
     />
   </form>
   <div class="articlesTable">
-    <div class="articles" *ngFor="let p of post">{{ p.title }}</div>
+    <div class="articles" *ngFor="let user of userSignUp">
+      <div *ngFor="let p of post">
+        <ng-container *ngIf="user.id == p.user_id">
+          <p>TITOLO: {{ p.title }}</p>
+          <p>CORPO: {{ p.body }}</p>
+          <p>AUTORE: {{ user.name }}</p>
+          <div *ngFor="let ok of Standardcommentlist$">
+            <ng-container *ngIf="ok.post_id === p.id">
+              <p style="background-color: powderblue">
+                COMMENTO: {{ ok.body }}
+              </p>
+              <h1 style="background-color: powderblue">
+                NOME COMMENTO: {{ ok.name }}
+              </h1>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
   </div>
 </div>
 
-<div *ngFor="let post of standardPosts">
-  <h2>{{ post.title }}</h2>
-  <p>{{ post.body }}</p>
-  <div *ngFor="let user of userSignUp">
+<div *ngFor="let user of userSignUp">
+  <div class="containerPost" *ngFor="let post of standardPosts">
     <div *ngIf="user.id == post.user_id">
-      <h1 textcolor="green">{{ user.name }}</h1>
+      <h1>TITOLO: {{ post.title }}</h1>
+      <p>CORPO: {{ post.body }}</p>
+
+      <p>AUTORE: {{ user.name }}</p>
+
+      <div *ngFor="let ok of Standardcommentlist$">
+        <div *ngIf="ok.post_id === post.id">
+          <p>{{ ok.body }}</p>
+          <h1 style="background-color: powderblue">{{ ok.name }}</h1>
+          <h2>{{ noComment }}</h2>
+        </div>
+      </div>
+      <form
+        #commentForm="ngForm"
+        (click)="getCommentId(post.id)"
+        (ngSubmit)="onCommentStandard(commentForm.value, post.id)"
+      >
+        <label>Body</label>
+        <input type="text" name="body" ngModel required />
+        <button type="submit">Comment</button>
+      </form>
     </div>
   </div>
-
-  <!-- <div *ngFor="let comment of standardComments">
-    <div *ngIf="comment.post_id === post.id">
-      <h6>{{ comment.body }}</h6>
-      <h6>{{ comment.name }}</h6>
-    </div>
-  </div> -->
-
-  <div *ngFor="let ok of Standardcommentlist$">
-    <div *ngIf="ok.post_id === post.id">
-      <p>{{ ok.body }}</p>
-      {{ ok.name }}
-    </div>
-  </div>
-
-  <form
-    #commentForm="ngForm"
-    (click)="getCommentId(post.id)"
-    (ngSubmit)="onCommentStandard(commentForm.value, post.id)"
-  >
-    <label>Body</label>
-    <input type="text" name="body" ngModel required />
-    <button type="submit">Comment</button>
-  </form>
 </div>
 
 <form #postForm="ngForm" (ngSubmit)="onPost(postForm.value)">

@@ -30,4 +30,10 @@ export class DatabaseService {
 
     return this.http.post(url, body);
   }
+
+  userDataAfterSignup() {
+    const url = `https://gorest.co.in/public/v2/users`;
+
+    return this.http.get(url);
+  }
 }
