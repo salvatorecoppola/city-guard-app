@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserSignUp } from '../../models/userSignup';
-import { DatabaseService } from '../../services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { userFromSignup } from '../../models/userFromSignup';
-import { mergeMap } from 'rxjs';
+import { UserService } from '../../services/api-services/user.service';
 
 @Component({
   selector: 'app-user',
@@ -17,7 +15,7 @@ export class UserComponent implements OnInit {
   userSignUp: UserSignUp[] = [];
 
   constructor(
-    private dataBase: DatabaseService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -27,7 +25,7 @@ export class UserComponent implements OnInit {
   }
 
   getPersoneID() {
-    this.dataBase.returnUser().subscribe((data: any) => {
+    this.userService.returnUser().subscribe((data: any) => {
       this.userSignUp = data;
       //1
       //Retrieving user for display them in HTML
@@ -47,16 +45,16 @@ export class UserComponent implements OnInit {
     });
   }
 
-  getPersona(index: number) {
+  getPersona(id: number) {
     //5 make the call happen
-    this.dataBase.returnUser2(this.userId).subscribe((data: any) => {
+    this.userService.returnUser3(this.userId).subscribe((data: any) => {
       this.userDetail = data;
     });
   } //and then make display it in HTML
 
   deleteUser(index: number) {
     //5 make the call happen
-    this.dataBase.deleteUser(this.userId).subscribe((data: any) => {
+    this.userService.deleteUser(this.userId).subscribe((data: any) => {
       this.userDetail = data;
       return this.router.navigate(['/user']);
     });

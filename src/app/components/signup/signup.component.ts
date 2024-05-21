@@ -4,6 +4,7 @@ import { DatabaseService } from '../../services/database.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { TokenInterceptorService } from '../token/token-interceptor.service';
+import { userFromSignup } from '../../models/userFromSignup';
 
 @Component({
   selector: 'app-signup',
@@ -11,6 +12,7 @@ import { TokenInterceptorService } from '../token/token-interceptor.service';
   styleUrl: './signup.component.css',
 })
 export class SignupComponent {
+  userSignUp: userFromSignup;
   //INTRODUCTION
   //Here is were I started my project,
   //I liked to use for the SIGNUP form the **Template Driven Form,
@@ -74,6 +76,20 @@ export class SignupComponent {
       //now we have successfully stored the data
       //receivd from the registration
       //wich are ready from being used in AuthService.
+    });
+    this.DataService.userDataAfterSignup().subscribe((data: any) => {
+      this.userSignUp = data;
+      console.log(this.userSignUp);
+      const fratm = data[0].id;
+      // Retrieve the object from localStorage
+      const retrievedUser = JSON.parse(localStorage.getItem('user'));
+      retrievedUser.id = fratm;
+      // Convert the modified object back to a JSON string
+      const updatedDataString = JSON.stringify(retrievedUser);
+      // Save the updated object back to the localStorage
+      localStorage.setItem('user', updatedDataString);
+      console.log(updatedDataString);
+      return data;
     });
   }
 }
